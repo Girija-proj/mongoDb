@@ -1,0 +1,7 @@
+com\pim\poc\mongodb\model\Employee.class
+com\pim\poc\mongodb\service\EmployeeCollectionService.class
+com\pim\poc\mongodb\rest\EmployeeResource.class
+com\pim\poc\mongodb\connection\MongoDbConnection.class
+com\pim\poc\mongodb\EmployeeApp.class
+com\pim\poc\mongodb\QuickTour.class
+com\pim\poc\mongodb\Application.class
