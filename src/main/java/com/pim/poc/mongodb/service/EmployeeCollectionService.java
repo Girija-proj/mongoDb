@@ -1,19 +1,29 @@
 package com.pim.poc.mongodb.service;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.pim.poc.mongodb.connection.MongoDbConnection;
+import com.pim.poc.mongodb.model.Address;
 import com.pim.poc.mongodb.model.Employee;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.OptionalDataException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -51,10 +61,34 @@ public class EmployeeCollectionService {
         insertMultipleEmployeeDocuments(employeeMongoCollection);
     }
 
+    public   List< List<Document>>  getEmployeesAddressInfo() {
+        List<Document> employeeList = new ArrayList<>();
+        IntStream.range(11, 15).forEach((val) -> {
+        Document nestedEmployeeDoc = new Document("EmpId", val).append("Name", "user_" + val).append("Skills", Stream.of("node", "react", "express").collect(Collectors.toList())).append("Department", "IT").
+                append("customer-address",
+                        Arrays.asList(new Document( new Document("primary",Arrays.asList(new Document("houseNo", val).append("streetNo", "street " + val).append("block", "A").append("city", "delhi").
+                                append("state", "delhi").append("country", "India"))))));
+            employeeList.add(nestedEmployeeDoc);
+        });
+        mongoDbConnection.getMongoClient().getDatabase("company").getCollection("employee").insertMany(employeeList);
+
+        FindIterable<Document> findIterable = mongoDbConnection.getMongoClient().getDatabase("company").getCollection("employee").find();
+        List< List<Document>> alEmployees = new ArrayList<>();
+
+        findIterable.iterator().forEachRemaining(employeeDoc -> {
+            if( employeeDoc.containsKey("customer-address")){
+                List<Document> documentList = (List<Document> ) employeeDoc.get("customer-address");
+                alEmployees.add(documentList);
+            }
+        });
+      return alEmployees ;
+    }
+
+
     private void insertMultipleEmployeeDocuments (MongoCollection<Employee> employeeMongoCollection) {
         List<Employee> employees = new ArrayList<>();
         IntStream.range(1,10).forEach((value) -> {
-            employees.add(createEmployee(value));
+            employees.add(createEmployeeByEntityMapping (value));
         });
         employeeMongoCollection.insertMany(employees);
     }
@@ -66,7 +100,7 @@ public class EmployeeCollectionService {
     }
 
 
-    private Employee createEmployee (int id) {
+    private Employee createEmployeeByEntityMapping (int id) {
         Employee employee = new Employee();
         employee.setEid(id);
         employee.setName("user_"+id);
@@ -85,8 +119,11 @@ public class EmployeeCollectionService {
     }
 
     public String findEmployeeById (String id) {
-      return  getCollection(MongoClients.create().getDatabase("company")).find(eq("EmpId",Integer.parseInt(id))).first().toJson();
-
+      Document document =  getCollection(MongoClients.create().getDatabase("company")).find(eq("EmpId",Integer.parseInt(id))).first();
+      if(Optional.of(document).isPresent()){
+          return  document.toJson();
+        }
+      else return "failure";
     }
 
     private MongoCollection<Document> getCollection (MongoDatabase database) {
@@ -99,9 +136,32 @@ public class EmployeeCollectionService {
        return deleteResult.wasAcknowledged();
     }
 
+    public long updateEmployeeAddressById (String id, Address address) {
+
+        BasicDBObject query = new BasicDBObject();
+        query.put("eid",Integer.parseInt(id));
+
+        BasicDBObject update = new BasicDBObject();
+        update.put("$set",new BasicDBObject("Customer Address.0.houseNo",address.getHouseNo()));
+        UpdateResult updateResult = mongoDbConnection.getMongoClient().getDatabase("company").getCollection("employee").updateOne(query, update);
+        return updateResult.getModifiedCount();
+    }
+
+    public List<Document> getEmployeesByName (String name) {
+
+        Bson matcher = Aggregates.match(eq("Name", name));
+        Bson project = Aggregates.project(Projections.fields(Projections.excludeId(), Projections.include("Name", "Department")));
+               List<Document> alFilteredDocs = new ArrayList<>();
+        mongoDbConnection.getMongoClient().getDatabase("company").getCollection("employee").aggregate(Arrays.asList(matcher,project)).
+               forEach((Consumer<Document>) document -> alFilteredDocs.add(document));
+        return alFilteredDocs;
+    }
 
 
-/*
+    
+    
+    
+    /*
     public void initializeColllection () {
 
         MongoClient mongoDbConnection = this.mongoDbConnection.getMongoClient(settings);

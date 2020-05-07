@@ -19,6 +19,9 @@ public class Employee {
     @BsonProperty(value = "Department")
     private String dept;
 
+    @BsonProperty(value = "Customer Address")
+    private CustomerAddress customerAddress;
+
     public int getEid () {
         return eid;
     }
@@ -51,5 +54,11 @@ public class Employee {
         this.dept = dept;
     }
 
+    public CustomerAddress getCustomerAddress () {
+        return customerAddress;
+    }
 
+    public void setCustomerAddress (CustomerAddress customerAddress) {
+        this.customerAddress = customerAddress;
+    }
 }

@@ -1,7 +1,9 @@
 com\pim\poc\mongodb\model\Employee.class
 com\pim\poc\mongodb\service\EmployeeCollectionService.class
+com\pim\poc\mongodb\SwaggerConfig.class
+com\pim\poc\mongodb\model\Address.class
+com\pim\poc\mongodb\model\CustomerAddress.class
 com\pim\poc\mongodb\rest\EmployeeResource.class
 com\pim\poc\mongodb\connection\MongoDbConnection.class
-com\pim\poc\mongodb\EmployeeApp.class
 com\pim\poc\mongodb\QuickTour.class
 com\pim\poc\mongodb\Application.class

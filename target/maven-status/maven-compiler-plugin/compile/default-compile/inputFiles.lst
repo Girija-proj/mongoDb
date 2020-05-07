@@ -1,7 +1,9 @@
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\connection\MongoDbConnection.java
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\Application.java
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\QuickTour.java
-D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\EmployeeApp.java
+D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\SwaggerConfig.java
+D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\model\Address.java
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\service\EmployeeCollectionService.java
+D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\model\CustomerAddress.java
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\rest\EmployeeResource.java
 D:\Girija\PIM\workspace\mongo\src\main\java\com\pim\poc\mongodb\model\Employee.java

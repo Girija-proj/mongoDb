@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: mongodb-example
+Implementation-Version: 1.0-SNAPSHOT
+Built-By: GUR56371
+Implementation-Vendor-Id: com.pim.poc.mongodb
+Build-Jdk: 1.8.0_211
+Implementation-URL: http://projects.spring.io/spring-boot/mongodb-poc/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
